@@ -15,7 +15,7 @@ bolt task run package action=install name=glibc-langpack-de --targets puppet
 ssh puppetca.pub.example.cloud -l root
 
 puppet resource package puppetserver ensure=present
-puppet config set --section agent server puppetca.priv.example.cloud
+puppet config set --section agent server $(facter networking.fqdn)
 
 # enable allow-subject-alt-names
 vi /etc/puppetlabs/puppetserver/conf.d/ca.conf
@@ -42,7 +42,7 @@ puppet agent -t --waitforcert 10
 # run on PuppetCA
 puppetserver ca sign --certname puppet.priv.example.cloud
 
-puppet config set --section agent server puppet.priv.example.cloud # set server to puppet
+puppet config set --section agent server $(facter networking.fqdn) # set server to puppet
 puppet resource service puppetserver ensure=running enable=true
 ```
 
@@ -74,7 +74,7 @@ vi /etc/puppetlabs/r10k/r10k.yaml
 :cachedir: '/var/cache/r10k'
 :sources:
   :puppet:
-    remote: 'https://github.com/rwaffen/pupin-control.git'
+    remote: 'https://github.com/rand0mcode/pupin.control.git'
     basedir: '/etc/puppetlabs/code/environments'
 
 /opt/puppetlabs/puppet/bin/r10k deploy environment -pv
